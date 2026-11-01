@@ -47,6 +47,12 @@
     festool.setAttribute('aria-label','Min Festool-samling');
     festool.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M8 17V7h9M8 12h7"/></svg><span>Min Festool-samling</span>';
     nav.appendChild(festool);
+    var places=document.createElement('a');
+    places.href='./forvaringsplatser-bilder.html';
+    places.className='jans-project-link jans-places-gallery-link';
+    places.setAttribute('aria-label','Se förvaringsplatser och deras innehåll i bilder');
+    places.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="16" x="3" y="4" rx="2"/><circle cx="8" cy="9" r="2"/><path d="m4 17 5-5 4 3 3-3 4 5"/></svg><span>Platser i bilder</span>';
+    nav.appendChild(places);
     var check=document.createElement('a');
     check.href='./synk-anslut.html';
     check.className='jans-project-link jans-audit-link';
