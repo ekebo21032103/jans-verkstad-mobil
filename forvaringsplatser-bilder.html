@@ -17,7 +17,7 @@ h1{font-size:clamp(28px,5vw,38px);letter-spacing:-.03em;margin:14px 0 9px}
 .subtitle{color:#657767;line-height:1.55;margin-bottom:22px}
 .status{background:#e5ede3;border-radius:11px;padding:12px 15px;line-height:1.45}
 .status.error{background:#f9e9e5;color:#7d2921}
-.filters{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0;align-items:center}.add-place{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:12px 17px;background:#234e3d;color:#fff;border-radius:12px;text-decoration:none;font-weight:650;white-space:nowrap}@media(max-width:490px){.add-place{width:100%}}
 input[type=search]{width:100%;background:white;border:1px solid #cbd5c9;border-radius:12px;padding:15px;min-height:50px;color:#254737;font-size:16px}
 .filters label{flex:1;min-width:230px}
 .count{color:#687b69;font-size:14px;margin:12px 0}
@@ -72,7 +72,7 @@ dialog::backdrop{background:#152b20a6}
 <h1>Hitta rätt låda direkt</h1>
 <p class="subtitle">Öppna en förvaringsplats för att fotografera själva lådan eller skåpet och se allt som finns där. Dina föremål och deras befintliga bilder ändras inte.</p>
 <p id="status" class="status" role="status" aria-live="polite">Läser förvaringsplatser …</p>
-<div class="filters"><label><input type="search" id="search" aria-label="Sök förvaringsplats eller föremål" placeholder="Sök låda, skåp eller föremål …"></label></div>
+<div class="filters"><label><input type="search" id="search" aria-label="Sök förvaringsplats eller föremål" placeholder="Sök låda, skåp eller föremål …"></label><a class="add-place" href="./?nyplats=1">＋ Ny förvaringsplats</a></div>
 <div class="backup-toolbar"><button id="exportPhotos" type="button" class="secondary">Spara säkerhetskopia av platsbilder</button><button id="importPhotos" type="button" class="secondary">Importera platsbilder</button><input type="file" id="importPhotosFile" accept=".json,application/json" hidden></div>
 <p class="backup-note">Platsbilderna sparas <strong>endast på denna enhet</strong> och ingår inte i verktygsregistrets vanliga säkerhetskopia. Exportera dem till Filer/iCloud Drive för att skydda dem eller föra över dem till Mac.</p>
 <p id="count" class="count"></p>
