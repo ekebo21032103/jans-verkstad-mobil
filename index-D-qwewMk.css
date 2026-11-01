@@ -4,3 +4,8 @@
 .brand-icon{background:#fff url("./icon.svg?v=20261027") center/contain no-repeat;border-radius:50%;overflow:hidden;flex-shrink:0}
 .brand-icon svg{display:none}
 .avatar{background:#fff url("./icon.svg?v=20261027") center/contain no-repeat;color:transparent;font-size:0}
+
+/* Jans verkstad: kompakt sortering i verktygsregistret. */
+.jans-sort-label{color:#5b6d61;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;font-size:13px;font-weight:600}
+.jans-sort-select{color:#234e3d;background:#fff;border:1px solid #c6d4c3;border-radius:9px;padding:8px 9px;min-height:38px;max-width:220px;font-size:13px}
+@media(max-width:600px){.section-heading{align-items:flex-start;flex-wrap:wrap}.jans-sort-label{width:100%;justify-content:space-between}.jans-sort-select{flex:1;max-width:220px}}
