@@ -24,6 +24,9 @@ input[type=search]{width:100%;background:white;border:1px solid #cbd5c9;border-r
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .place{display:flex;flex-direction:column;text-align:left;border:1px solid #dce4da;border-radius:15px;overflow:hidden;background:#fff;padding:0;color:#244435;min-width:0;box-shadow:0 3px 12px #243f3510}
 .place:hover{box-shadow:0 7px 20px #243f3520}
+.cover{position:relative;aspect-ratio:1.8;overflow:hidden;background:#e9eee5}
+.cover img{width:100%;height:100%;object-fit:cover;display:block}
+.cover span{position:absolute;bottom:7px;left:9px;color:#fff;background:#183a2ecf;padding:5px 9px;border-radius:7px;font-weight:700;font-size:12px}
 .mosaic{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;background:#e4ebe0;aspect-ratio:1.8}
 .thumb{position:relative;min-width:0;min-height:0;overflow:hidden;display:flex;justify-content:center;align-items:center;background:#e9eee5;color:#89a18e;font-size:22px}
 .thumb img{width:100%;height:100%;object-fit:cover;display:block}
@@ -37,6 +40,19 @@ dialog::backdrop{background:#152b20a6}
 .dialoghead h2{font-size:22px;margin:0}.dialoghead p{margin:5px 0 0;color:#6c7e6e;font-size:13px}
 .close{border:1px solid #d6dfd4;background:#f1f4ed;border-radius:12px;padding:9px 13px;white-space:nowrap}
 .dialogbody{padding:18px}
+.place-photo-area{padding:18px;border-bottom:1px solid #dce3d8}
+.place-photo-area>img{width:100%;max-height:390px;object-fit:contain;background:#ebefe9;border-radius:12px;margin-bottom:12px;display:block}
+.place-photo-area>img[hidden]{display:none}
+.photo-toolbar{display:flex;flex-wrap:wrap;gap:9px}
+.photo-toolbar button,.backup-toolbar button{background:#234e3d;color:white;border:0;border-radius:10px;padding:11px 15px;min-height:43px;font-size:14px;font-weight:650}
+.photo-toolbar .secondary,.backup-toolbar .secondary{background:#e5ebe3;color:#234e3d}
+.photo-toolbar .delete{background:#fff;color:#a3312b;border:1px solid #d9aba6}
+.photo-toolbar button[hidden]{display:none}
+.photo-status{color:#5e7262;line-height:1.5;font-size:13px;margin:10px 0 0}
+.backup-toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:11px 0}
+.backup-note{color:#647768;font-size:13px;line-height:1.55}
+.photo-empty{display:flex;align-items:center;justify-content:center;aspect-ratio:2.2;background:#e5ece2;border:1px dashed #b6c5b4;border-radius:12px;color:#647d69;margin-bottom:12px;font-weight:600}
+
 .items{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .item{border:1px solid #dce4da;border-radius:12px;overflow:hidden;background:white;display:flex;flex-direction:column;min-width:0}
 .item img,.item .noimg{width:100%;aspect-ratio:4/3;object-fit:cover;background:#e8ede7}
@@ -46,6 +62,7 @@ dialog::backdrop{background:#152b20a6}
 .item .details small{color:#67776a;font-size:12px;overflow-wrap:anywhere}
 .note{font-size:13px;color:#637365;line-height:1.55;margin-top:20px}
 @media(max-width:800px){.grid,.items{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.photo-empty[hidden]{display:none}
 @media(max-width:490px){.inner{flex-direction:column;align-items:flex-start}.grid,.items{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.body{padding:11px}.body b{font-size:14px}.body small{font-size:12px}.mosaic{aspect-ratio:1.25}.dialogbody{padding:10px}dialog{width:calc(100% - 12px)}}
 </style>
 </head>
@@ -53,18 +70,32 @@ dialog::backdrop{background:#152b20a6}
 <header class="top"><div class="inner"><b>Jans verkstad · Förvaringsplatser i bilder</b><a href="./">Till verktygsregistret</a></div></header>
 <main>
 <h1>Hitta rätt låda direkt</h1>
-<p class="subtitle">Öppna en förvaringsplats och se allt som finns där – med fotografierna från ditt befintliga register. Den här sidan läser bara dina uppgifter och ändrar ingenting.</p>
+<p class="subtitle">Öppna en förvaringsplats för att fotografera själva lådan eller skåpet och se allt som finns där. Dina föremål och deras befintliga bilder ändras inte.</p>
 <p id="status" class="status" role="status" aria-live="polite">Läser förvaringsplatser …</p>
 <div class="filters"><label><input type="search" id="search" aria-label="Sök förvaringsplats eller föremål" placeholder="Sök låda, skåp eller föremål …"></label></div>
+<div class="backup-toolbar"><button id="exportPhotos" type="button" class="secondary">Spara säkerhetskopia av platsbilder</button><button id="importPhotos" type="button" class="secondary">Importera platsbilder</button><input type="file" id="importPhotosFile" accept=".json,application/json" hidden></div>
+<p class="backup-note">Platsbilderna sparas <strong>endast på denna enhet</strong> och ingår inte i verktygsregistrets vanliga säkerhetskopia. Exportera dem till Filer/iCloud Drive för att skydda dem eller föra över dem till Mac.</p>
 <p id="count" class="count"></p>
 <section id="grid" class="grid" aria-label="Förvaringsplatser"></section>
-<p class="note">Fotona visar föremål som hör till respektive plats, inte ett separat fotografi av själva skåpet eller lådan. Använd samma app på hemskärmen som du använder för registret. Om sidan öppnas i Safari som en separat installation kan det lokala registret vara tomt där.</p>
+<p class="note">När du fotograferat en plats visas platsfotot på kortet. Annars visas ett urval av föremålens foton. Platsbilder sparas separat i den här installationen och synkroniseras inte med Mac eller iPhone via molnet. Använd appen från hemskärmen så att du arbetar i samma lokala lagring som verktygsregistret.</p>
 </main>
-<dialog id="panel" aria-labelledby="placeTitle"><div class="dialoghead"><div><h2 id="placeTitle"></h2><p id="placeSummary"></p></div><button type="button" id="close" class="close">Stäng</button></div><div id="placeItems" class="dialogbody"></div></dialog>
+<dialog id="panel" aria-labelledby="placeTitle"><div class="dialoghead"><div><h2 id="placeTitle"></h2><p id="placeSummary"></p></div><button type="button" id="close" class="close">Stäng</button></div><section class="place-photo-area" aria-label="Foto av förvaringsplatsen">
+<div id="emptyPlacePhoto" class="photo-empty">Inget foto av förvaringsplatsen ännu</div>
+<img id="placeImage" alt="Foto av förvaringsplats" hidden>
+<div class="photo-toolbar">
+<button type="button" id="takePlacePhoto">Ta foto</button>
+<button type="button" id="pickPlacePhoto" class="secondary">Välj bild</button>
+<button type="button" id="deletePlacePhoto" class="delete" hidden>Ta bort platsfoto</button>
+<input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
+<input type="file" id="libraryInput" accept="image/*" hidden>
+</div>
+<p id="placePhotoStatus" class="photo-status" role="status" aria-live="polite">Fotot sparas bara på denna enhet.</p>
+</section>
+<div id="placeItems" class="dialogbody"></div></dialog>
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
-let data={items:[],places:[]},groups=[],ready=false;
+let data={items:[],places:[]},groups=[],ready=false,placePhotos=new Map(),currentPlace=null,photoDB=null;
 const collator=new Intl.Collator('sv',{numeric:true,sensitivity:'base'});
 const norm=s=>String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('sv').trim();
 function create(tag,klass,content){
@@ -76,6 +107,108 @@ function create(tag,klass,content){
 function photo(it){
  const s=it?.photo;
  return typeof s==='string'&&/^data:image\/(?:jpeg|jpg|png|webp);base64,/i.test(s)?s:null;
+}
+// Egen databas for platsfotografier. Verktygsregister och Supabase skrivs aldrig till har.
+const PHOTO_DB='jans-verkstad-platsfoton-v1', PHOTO_STORE='photos';
+function request(r){return new Promise((resolve,reject)=>{r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error||Error('Lagringsfel'));});}
+async function openPhotoDB(){
+ if(photoDB)return photoDB;
+ photoDB=await new Promise((resolve,reject)=>{
+  const r=indexedDB.open(PHOTO_DB,1);
+  r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(PHOTO_STORE))r.result.createObjectStore(PHOTO_STORE,{keyPath:'id'});};
+  r.onsuccess=()=>resolve(r.result);
+  r.onerror=()=>reject(r.error||Error('Kunde inte oppna fotolagringen.'));
+ });
+ return photoDB;
+}
+async function loadPlacePhotos(){
+ const d=await openPhotoDB(),a=await request(d.transaction(PHOTO_STORE,'readonly').objectStore(PHOTO_STORE).getAll());
+ placePhotos=new Map(a.filter(x=>x&&typeof x.id==='string'&&/^data:image\/jpeg;base64,/i.test(x.dataUrl)).map(x=>[x.id,x]));
+}
+async function putPhoto(record){
+ const d=await openPhotoDB();await request(d.transaction(PHOTO_STORE,'readwrite').objectStore(PHOTO_STORE).put(record));
+ placePhotos.set(record.id,record);
+}
+async function erasePhoto(id){
+ const d=await openPhotoDB();await request(d.transaction(PHOTO_STORE,'readwrite').objectStore(PHOTO_STORE).delete(id));
+ placePhotos.delete(id);
+}
+function showPlacePhoto(entry){
+ const p=placePhotos.get(entry.id),im=$('placeImage');
+ im.hidden=!p;
+ if(p){im.src=p.dataUrl;im.alt='Foto av '+entry.name;}else im.removeAttribute('src');
+ $('emptyPlacePhoto').hidden=!!p;
+ $('deletePlacePhoto').hidden=!p;
+ $('placePhotoStatus').textContent=p?'Platsfoto finns sparat lokalt. Du kan ta ett nytt eller välja en annan bild.':'Ta en bild av skåpet, hyllan eller lådan. Den sparas bara på denna enhet.';
+}
+async function convertPhoto(file){
+ if(file.size>30*1024*1024)throw Error('Välj en bild som är mindre än 30 MB.');
+ if(!file.type.startsWith('image/'))throw Error('Välj en bildfil.');
+ const uri=URL.createObjectURL(file);
+ try{
+  const img=new Image();
+  await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(Error('Bilden kunde inte öppnas. Prova med JPG eller PNG.'));img.src=uri;});
+  const scale=Math.min(1,1600/Math.max(img.naturalWidth,img.naturalHeight));
+  const canvas=document.createElement('canvas');
+  canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));
+  canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));
+  const ctx=canvas.getContext('2d');if(!ctx)throw Error('Kunde inte bearbeta fotografiet.');
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(img,0,0,canvas.width,canvas.height);
+  const dataUrl=canvas.toDataURL('image/jpeg',.82);
+  if(dataUrl.length>9*1024*1024)throw Error('Fotot blev för stort för lokal lagring.');
+  return dataUrl;
+ }finally{URL.revokeObjectURL(uri);}
+}
+async function handlePlacePhoto(file){
+ if(!file||!currentPlace)return;
+ const id=currentPlace.id,name=currentPlace.name;
+ $('takePlacePhoto').disabled=$('pickPlacePhoto').disabled=true;
+ $('placePhotoStatus').textContent='Förbereder och sparar fotografiet …';
+ try{
+  const dataUrl=await convertPhoto(file);
+  await putPhoto({id,name,dataUrl,updated:new Date().toISOString()});
+  showPlacePhoto(currentPlace);render();
+  $('placePhotoStatus').textContent='Fotot är sparat lokalt för '+name+'. Spara gärna en separat säkerhetskopia av platsbilderna.';
+ }catch(err){$('placePhotoStatus').textContent='Fotot kunde inte sparas: '+err.message;}
+ finally{$('takePlacePhoto').disabled=$('pickPlacePhoto').disabled=false;}
+}
+async function backupPlacePhotos(){
+ const btn=$('exportPhotos');btn.disabled=true;
+ try{
+  const rows=[...placePhotos.values()].map(x=>({id:x.id,name:x.name,dataUrl:x.dataUrl,updated:x.updated}));
+  if(!rows.length){$('status').textContent='Det finns ännu inga platsbilder att exportera.';return;}
+  const content=JSON.stringify({format:'jans-verkstad-platsfoton-v1',exported:new Date().toISOString(),photos:rows});
+  const url=URL.createObjectURL(new Blob([content],{type:'application/json'})),a=document.createElement('a');
+  a.href=url;a.download='jans-platsbilder-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+  $('status').textContent='Säkerhetskopia skapad med '+rows.length+' platsbilder. Spara filen i Filer eller iCloud Drive.';
+ }catch(err){$('status').textContent='Exporten misslyckades: '+err.message;}
+ finally{btn.disabled=false;}
+}
+async function importPlacePhotos(file){
+ if(!file)return;
+ try{
+  if(file.size>100*1024*1024)throw Error('Säkerhetskopian är större än 100 MB.');
+  const input=JSON.parse(await file.text());
+  if(input?.format!=='jans-verkstad-platsfoton-v1'||!Array.isArray(input.photos))throw Error('Detta är inte en säkerhetskopia av platsbilder.');
+  const validKeys=new Set(groups.map(g=>g.id)),newIds=new Set(),incoming=[];
+  let skipped=0;
+  for(const entry of input.photos){
+   if(!entry||typeof entry.id!=='string'||!validKeys.has(entry.id)||!/^data:image\/jpeg;base64,[a-zA-Z0-9+/=]+$/.test(entry.dataUrl)||entry.dataUrl.length>9*1024*1024||newIds.has(entry.id)||placePhotos.has(entry.id)){skipped++;continue;}
+   incoming.push({id:entry.id,name:String(entry.name||''),dataUrl:entry.dataUrl,updated:String(entry.updated||new Date().toISOString())});
+   newIds.add(entry.id);
+  }
+  if(!incoming.length){$('status').textContent='Inga nya platsbilder att importera. Befintliga bilder har inte ändrats. Hoppade över '+skipped+' poster.';return;}
+  if(!confirm('Importera '+incoming.length+' nya platsbilder på denna enhet? Befintliga platsbilder behålls.'))return;
+  const d=await openPhotoDB();
+  const tx=d.transaction(PHOTO_STORE,'readwrite'),store=tx.objectStore(PHOTO_STORE);
+  const done=new Promise((resolve,reject)=>{tx.oncomplete=resolve;tx.onerror=tx.onabort=()=>reject(tx.error||Error('Importfel'));});
+  for(const entry of incoming)store.add(entry);
+  await done;
+  await loadPlacePhotos();render();
+  $('status').textContent='Importerade '+incoming.length+' platsbilder. '+skipped+' poster hoppades över. Befintliga bilder behölls.';
+ }catch(err){$('status').textContent='Importen misslyckades: '+err.message;}
 }
 function viewItem(item){
  const el=create('article','item');
@@ -92,6 +225,7 @@ function viewItem(item){
 }
 function show(place){
  const entry=groups.find(g=>g.name===place);if(!entry)return;
+ currentPlace=entry;showPlacePhoto(entry);
  $('placeTitle').textContent=entry.name;
  $('placeSummary').textContent=entry.items.length+' föremål · '+entry.items.filter(x=>photo(x)).length+' med foto';
  const body=$('placeItems');body.replaceChildren();
@@ -113,6 +247,11 @@ function render(){
  for(const g of visible){
   const btn=create('button','place');btn.type='button';btn.setAttribute('aria-label','Visa '+g.name+' – '+g.items.length+' föremål');
   btn.onclick=()=>show(g.name);
+  if(placePhotos.has(g.id)){
+   const cover=create('div','cover'),im=create('img');
+   im.src=placePhotos.get(g.id).dataUrl;im.alt='';im.loading='lazy';
+   cover.appendChild(im);cover.appendChild(create('span',null,'Foto av platsen'));btn.appendChild(cover);
+  }else{
   const mosaic=create('div','mosaic');
   const images=g.items.filter(it=>photo(it)).slice(0,4);
   if(!images.length){
@@ -127,6 +266,7 @@ function render(){
    }
   }
   btn.appendChild(mosaic);
+  }
   const body=create('div','body');body.appendChild(create('b',null,g.name));body.appendChild(create('small',null,g.items.length+' föremål · '+g.items.filter(it=>photo(it)).length+' med foto'));
   btn.appendChild(body);grid.appendChild(btn);
  }
@@ -155,19 +295,33 @@ async function init(){
   const places=new Map();
   for(const p of data.places){
    const name=String(p.name||'').trim();
-   if(name&&!places.has(name))places.set(name,{name,items:[]});
+   if(name&&!places.has(name))places.set(name,{name,id:String(p.id||'namn:'+norm(name)),items:[]});
   }
   for(const it of data.items){
    const name=String(it.location||'').trim()||'Utan förvaringsplats';
-   if(!places.has(name))places.set(name,{name,items:[]});
+   if(!places.has(name))places.set(name,{name,id:'namn:'+norm(name),items:[]});
    places.get(name).items.push(it);
   }
   groups=[...places.values()].sort((a,b)=>collator.compare(a.name,b.name));
-  $('status').textContent='Klart: '+data.items.length+' föremål och '+groups.length+' förvaringsplatser. Skrivskyddad bildöversikt.';
+  await loadPlacePhotos();
+  $('status').textContent='Klart: '+data.items.length+' föremål, '+groups.length+' förvaringsplatser och '+groups.filter(g=>placePhotos.has(g.id)).length+' platsbilder. Föremålsregistret är skrivskyddat.';
   ready=true;render();
  }catch(err){$('status').classList.add('error');$('status').textContent='Kunde inte läsa det lokala registret: '+err.message+' Öppna sidan från Jans verkstad på hemskärmen, inte från en annan webbläsarinstallation.';}
 }
 $('search').addEventListener('input',render);
+$('takePlacePhoto').addEventListener('click',()=>$('cameraInput').click());
+$('pickPlacePhoto').addEventListener('click',()=>$('libraryInput').click());
+$('cameraInput').addEventListener('change',async e=>{const f=e.target.files?.[0];e.target.value='';await handlePlacePhoto(f);});
+$('libraryInput').addEventListener('change',async e=>{const f=e.target.files?.[0];e.target.value='';await handlePlacePhoto(f);});
+$('deletePlacePhoto').addEventListener('click',async()=>{
+ if(!currentPlace||!placePhotos.has(currentPlace.id))return;
+ if(!confirm('Ta bort fotot av '+currentPlace.name+' från denna enhet? Föremål och föremålsfoton påverkas inte.'))return;
+ try{await erasePhoto(currentPlace.id);showPlacePhoto(currentPlace);render();$('placePhotoStatus').textContent='Platsfotot har tagits bort från denna enhet.';}
+ catch(e){$('placePhotoStatus').textContent='Kunde inte ta bort fotot: '+e.message;}
+});
+$('exportPhotos').addEventListener('click',backupPlacePhotos);
+$('importPhotos').addEventListener('click',()=>$('importPhotosFile').click());
+$('importPhotosFile').addEventListener('change',async e=>{const file=e.target.files?.[0];e.target.value='';await importPlacePhotos(file);});
 $('close').addEventListener('click',()=>$('panel').close());
 $('panel').addEventListener('click',e=>{if(e.target===$('panel'))$('panel').close()});
 init();
