@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#234e3d">
+<link rel="icon" href="./jans-hantverk-256.png">
+<title>Förvaringsplatser i bilder – Jans verkstad</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#254737;background:#f5f6f0;font-synthesis:none}
+*{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{cursor:pointer}a{color:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #7aa38b;outline-offset:3px}
+.top{background:#234e3d;color:#fff}.inner{max-width:1110px;margin:auto;display:flex;gap:18px;align-items:center;justify-content:space-between;padding:18px}
+.top b{font-size:19px}.top a{text-decoration:none;border:1px solid #a1b8aa;padding:10px 12px;border-radius:10px;font-size:14px}
+main{max-width:1110px;margin:auto;padding:22px 16px 80px}
+h1{font-size:clamp(28px,5vw,38px);letter-spacing:-.03em;margin:14px 0 9px}
+.subtitle{color:#657767;line-height:1.55;margin-bottom:22px}
+.status{background:#e5ede3;border-radius:11px;padding:12px 15px;line-height:1.45}
+.status.error{background:#f9e9e5;color:#7d2921}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+input[type=search]{width:100%;background:white;border:1px solid #cbd5c9;border-radius:12px;padding:15px;min-height:50px;color:#254737;font-size:16px}
+.filters label{flex:1;min-width:230px}
+.count{color:#687b69;font-size:14px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.place{display:flex;flex-direction:column;text-align:left;border:1px solid #dce4da;border-radius:15px;overflow:hidden;background:#fff;padding:0;color:#244435;min-width:0;box-shadow:0 3px 12px #243f3510}
+.place:hover{box-shadow:0 7px 20px #243f3520}
+.mosaic{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;background:#e4ebe0;aspect-ratio:1.8}
+.thumb{position:relative;min-width:0;min-height:0;overflow:hidden;display:flex;justify-content:center;align-items:center;background:#e9eee5;color:#89a18e;font-size:22px}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.placeholder{height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:#637d69}
+.body{padding:15px 16px 18px;display:flex;flex-direction:column;gap:5px}
+.body b{font-size:17px;overflow-wrap:anywhere}.body small{font-size:13px;color:#6d7b70}
+.empty{padding:32px;text-align:center;border-radius:12px;background:white;color:#637367}
+dialog{padding:0;border:0;border-radius:18px;max-height:90dvh;width:min(920px,calc(100% - 20px));color:#244435;background:#f8faf7;box-shadow:0 18px 70px #10261a66}
+dialog::backdrop{background:#152b20a6}
+.dialoghead{display:flex;gap:12px;justify-content:space-between;align-items:start;padding:18px 20px;border-bottom:1px solid #dce3d8;background:white;position:sticky;top:0;z-index:1}
+.dialoghead h2{font-size:22px;margin:0}.dialoghead p{margin:5px 0 0;color:#6c7e6e;font-size:13px}
+.close{border:1px solid #d6dfd4;background:#f1f4ed;border-radius:12px;padding:9px 13px;white-space:nowrap}
+.dialogbody{padding:18px}
+.items{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.item{border:1px solid #dce4da;border-radius:12px;overflow:hidden;background:white;display:flex;flex-direction:column;min-width:0}
+.item img,.item .noimg{width:100%;aspect-ratio:4/3;object-fit:cover;background:#e8ede7}
+.noimg{display:flex;align-items:center;justify-content:center;color:#8b9d8e}
+.item .details{padding:12px;display:grid;gap:4px}
+.item .details b{font-size:14px;overflow-wrap:anywhere}
+.item .details small{color:#67776a;font-size:12px;overflow-wrap:anywhere}
+.note{font-size:13px;color:#637365;line-height:1.55;margin-top:20px}
+@media(max-width:800px){.grid,.items{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:490px){.inner{flex-direction:column;align-items:flex-start}.grid,.items{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.body{padding:11px}.body b{font-size:14px}.body small{font-size:12px}.mosaic{aspect-ratio:1.25}.dialogbody{padding:10px}dialog{width:calc(100% - 12px)}}
+</style>
+</head>
+<body>
+<header class="top"><div class="inner"><b>Jans verkstad · Förvaringsplatser i bilder</b><a href="./">Till verktygsregistret</a></div></header>
+<main>
+<h1>Hitta rätt låda direkt</h1>
+<p class="subtitle">Öppna en förvaringsplats och se allt som finns där – med fotografierna från ditt befintliga register. Den här sidan läser bara dina uppgifter och ändrar ingenting.</p>
+<p id="status" class="status" role="status" aria-live="polite">Läser förvaringsplatser …</p>
+<div class="filters"><label><input type="search" id="search" aria-label="Sök förvaringsplats eller föremål" placeholder="Sök låda, skåp eller föremål …"></label></div>
+<p id="count" class="count"></p>
+<section id="grid" class="grid" aria-label="Förvaringsplatser"></section>
+<p class="note">Fotona visar föremål som hör till respektive plats, inte ett separat fotografi av själva skåpet eller lådan. Använd samma app på hemskärmen som du använder för registret. Om sidan öppnas i Safari som en separat installation kan det lokala registret vara tomt där.</p>
+</main>
+<dialog id="panel" aria-labelledby="placeTitle"><div class="dialoghead"><div><h2 id="placeTitle"></h2><p id="placeSummary"></p></div><button type="button" id="close" class="close">Stäng</button></div><div id="placeItems" class="dialogbody"></div></dialog>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+let data={items:[],places:[]},groups=[],ready=false;
+const collator=new Intl.Collator('sv',{numeric:true,sensitivity:'base'});
+const norm=s=>String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('sv').trim();
+function create(tag,klass,content){
+ const el=document.createElement(tag);
+ if(klass)el.className=klass;
+ if(content!=null)el.textContent=String(content);
+ return el;
+}
+function photo(it){
+ const s=it?.photo;
+ return typeof s==='string'&&/^data:image\/(?:jpeg|jpg|png|webp);base64,/i.test(s)?s:null;
+}
+function viewItem(item){
+ const el=create('article','item');
+ const src=photo(item);
+ if(src){const im=create('img');im.src=src;im.alt=item.name||'Föremål';im.loading='lazy';el.appendChild(im);}
+ else el.appendChild(create('div','noimg','Inget foto'));
+ const d=create('div','details');
+ d.appendChild(create('b',null,item.name||'Namnlöst föremål'));
+ const more=[item.brand,item.model,item.category].filter(Boolean).join(' · ');
+ if(more)d.appendChild(create('small',null,more));
+ d.appendChild(create('small',null,(Number(item.quantity)||1)+' st'));
+ el.appendChild(d);
+ return el;
+}
+function show(place){
+ const entry=groups.find(g=>g.name===place);if(!entry)return;
+ $('placeTitle').textContent=entry.name;
+ $('placeSummary').textContent=entry.items.length+' föremål · '+entry.items.filter(x=>photo(x)).length+' med foto';
+ const body=$('placeItems');body.replaceChildren();
+ if(!entry.items.length)body.appendChild(create('p','empty','Den här förvaringsplatsen har inga registrerade föremål ännu.'));
+ else{
+  const list=create('div','items');
+  for(const it of [...entry.items].sort((a,b)=>collator.compare(a.name||'',b.name||'')))list.appendChild(viewItem(it));
+  body.appendChild(list);
+ }
+ if(!$('panel').open)$('panel').showModal();
+}
+function render(){
+ if(!ready)return;
+ const terms=norm($('search').value).split(/\s+/).filter(Boolean);
+ const visible=groups.filter(g=>terms.every(t=>norm(g.name+' '+g.items.map(it=>[it.name,it.model,it.brand,it.keywords].join(' ')).join(' ')).includes(t)));
+ $('count').textContent=visible.length+' av '+groups.length+' förvaringsplatser';
+ const grid=$('grid');grid.replaceChildren();
+ if(!visible.length){grid.appendChild(create('div','empty','Ingen förvaringsplats matchar sökningen.'));return;}
+ for(const g of visible){
+  const btn=create('button','place');btn.type='button';btn.setAttribute('aria-label','Visa '+g.name+' – '+g.items.length+' föremål');
+  btn.onclick=()=>show(g.name);
+  const mosaic=create('div','mosaic');
+  const images=g.items.filter(it=>photo(it)).slice(0,4);
+  if(!images.length){
+   const empty=create('div','placeholder');empty.style.gridColumn='1 / -1';empty.style.gridRow='1 / -1';
+   empty.appendChild(create('span',null,'▣'));empty.appendChild(create('small',null,'Inga föremålsbilder'));
+   mosaic.appendChild(empty);
+  }else{
+   for(let i=0;i<4;i++){
+    const cell=create('div','thumb');
+    if(images[i]){const im=create('img');im.src=photo(images[i]);im.alt='';im.loading='lazy';cell.appendChild(im);}
+    mosaic.appendChild(cell);
+   }
+  }
+  btn.appendChild(mosaic);
+  const body=create('div','body');body.appendChild(create('b',null,g.name));body.appendChild(create('small',null,g.items.length+' föremål · '+g.items.filter(it=>photo(it)).length+' med foto'));
+  btn.appendChild(body);grid.appendChild(btn);
+ }
+}
+async function localRegister(){
+ const db=await new Promise((resolve,reject)=>{
+  const req=indexedDB.open('jans-verkstad-mobil');
+  req.onupgradeneeded=()=>{req.transaction?.abort();reject(Error('Inget lokalt verktygsregister hittades i denna webbläsare.'))};
+  req.onsuccess=()=>resolve(req.result);
+  req.onerror=()=>reject(req.error||Error('Kunde inte läsa lagringen.'));
+ });
+ try{
+  if(!db.objectStoreNames.contains('register'))throw Error('Det lokala registret saknas.');
+  const value=await new Promise((resolve,reject)=>{
+   const req=db.transaction('register','readonly').objectStore('register').get('data');
+   req.onsuccess=()=>resolve(req.result);
+   req.onerror=()=>reject(req.error||Error('Kunde inte öppna registret.'));
+  });
+  if(!Array.isArray(value?.items)||!Array.isArray(value?.places))throw Error('Registret saknar föremål eller förvaringsplatser.');
+  return value;
+ }finally{db.close();}
+}
+async function init(){
+ try{
+  data=await localRegister();
+  const places=new Map();
+  for(const p of data.places){
+   const name=String(p.name||'').trim();
+   if(name&&!places.has(name))places.set(name,{name,items:[]});
+  }
+  for(const it of data.items){
+   const name=String(it.location||'').trim()||'Utan förvaringsplats';
+   if(!places.has(name))places.set(name,{name,items:[]});
+   places.get(name).items.push(it);
+  }
+  groups=[...places.values()].sort((a,b)=>collator.compare(a.name,b.name));
+  $('status').textContent='Klart: '+data.items.length+' föremål och '+groups.length+' förvaringsplatser. Skrivskyddad bildöversikt.';
+  ready=true;render();
+ }catch(err){$('status').classList.add('error');$('status').textContent='Kunde inte läsa det lokala registret: '+err.message+' Öppna sidan från Jans verkstad på hemskärmen, inte från en annan webbläsarinstallation.';}
+}
+$('search').addEventListener('input',render);
+$('close').addEventListener('click',()=>$('panel').close());
+$('panel').addEventListener('click',e=>{if(e.target===$('panel'))$('panel').close()});
+init();
+</script>
+</body></html>
