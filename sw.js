@@ -1,46 +1,74 @@
-// Jans verkstad: natverksprioriterad navigering, offlinebackup av senaste appen.
-const CACHE = "jans-verkstad-register-20261101-nyplats-v10";
-const FILES = [
-  "./index.html",
-  "./verkstad-v3-2-test.html",
-  "./manifest.webmanifest",
-  "./verkstad-v3-2.webmanifest",
-  "./jans-hantverk-256.png",
-  "./icon.svg",
-  "./index-D-qwewMk.css",
-  "./app-projekt-detailed-v2.js",
-  "./projekt-ritningar.html",
-  "./verkstadsoversikt.html",
-  "./forvaringsplatser-bilder.html",
-  "./projekt-autosynk.js",
-  "./projekt-moln.html",
-  "./synk-kontroll.html",
-  "./synk-anslut.html"
-];
-self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)).then(() => self.skipWaiting()));
-});
-self.addEventListener("activate", event => {
-  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith("jans-verkstad-") && key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim()));
-});
-self.addEventListener("fetch", event => {
-  const request = event.request;
-  const url = new URL(request.url);
+// Generated from the same build as the pages and their hashed assets.
+const CACHE = "jans-verkstad-app-d50581e79b5100ba",
+  FILES = ["./assets/index-DR5lru6x.css","./assets/index-DvYMwbxG.js","./assets/project-data-yFzO-Y3B.js","./assets/projekt-ritningar-C27al74s.js","./forvaringsplatser-bilder.html","./icon.svg","./index.html","./jans-hantverk-256.png","./manifest.webmanifest","./projekt-autosynk.js","./projekt-moln.html","./projekt-ritningar.html","./synk-anslut.html","./synk-kontroll.html","./verkstadsoversikt.html"];
+self.addEventListener("install", (event) =>
+  event.waitUntil(
+    (async () => {
+      const cache = await caches.open(CACHE);
+      await cache.addAll(FILES);
+      // First opening at the directory URL must work offline before a second visit.
+      await cache.put(
+        new URL("./", self.location.href).href,
+        await cache.match("./index.html"),
+      );
+      await self.skipWaiting();
+    })(),
+  ),
+);
+self.addEventListener("activate", (event) =>
+  event.waitUntil(
+    (async () => {
+      // Keep one previous app cache for modules used by an already-open page.
+      const previous = (await caches.keys()).filter(
+        (k) => k.startsWith("jans-verkstad-app-") && k !== CACHE,
+      );
+      const remove = previous.slice(0, -1);
+      await Promise.all(remove.map((k) => caches.delete(k)));
+      await self.clients.claim();
+    })(),
+  ),
+);
+self.addEventListener("fetch", (event) => {
+  const request = event.request,
+    url = new URL(request.url);
   if (request.method !== "GET" || url.origin !== self.location.origin) return;
-  if (request.mode === "navigate") {
-    // Hamtar aktuell startsida vid varje ny oppning; anvander cache utan internet.
-    event.respondWith(fetch(request, {cache:"no-store"}).then(response => {
-      if (response.ok) {
-        const key = url.origin + url.pathname;
-        const copy = response.clone();
-        event.waitUntil(caches.open(CACHE).then(cache => cache.put(key,copy)));
+  event.respondWith(
+    (async () => {
+      const cache = await caches.open(CACHE);
+      if (request.mode === "navigate") {
+        try {
+          const response = await fetch(request, { cache: "no-store" });
+          if (response.ok) {
+            event.waitUntil(
+              cache.put(url.origin + url.pathname, response.clone()),
+            );
+            return response;
+          }
+          const saved = await cache.match(request, { ignoreSearch: true });
+          return saved || response;
+        } catch {
+          const saved = await cache.match(request, { ignoreSearch: true });
+          if (saved) return saved;
+          const root = new URL("./", self.location.href);
+          if (
+            url.pathname === root.pathname ||
+            url.pathname === new URL("index.html", root).pathname
+          )
+            return (await cache.match("./index.html")) || Response.error();
+          return new Response(
+            "Sidan finns inte sparad för offlinebruk. Öppna verkstadens startsida.",
+            {
+              status: 503,
+              headers: { "Content-Type": "text/plain; charset=utf-8" },
+            },
+          );
+        }
       }
-      return response;
-    }).catch(async () => {
-      const fallback = await caches.match(request,{ignoreSearch:true});
-      return fallback || await caches.match("./verkstad-v3-2-test.html") || await caches.match("./index.html") || Response.error();
-    }));
-    return;
-  }
-  event.respondWith(caches.match(request,{ignoreSearch:true}).then(hit => hit || fetch(request)));
+      return (
+        (await cache.match(request, { ignoreSearch: true })) ||
+        (await caches.match(request)) ||
+        fetch(request)
+      );
+    })(),
+  );
 });
