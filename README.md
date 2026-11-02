@@ -57,4 +57,6 @@ Befintlig valfri synkronisering finns kvar. Synklogiken har inte ändrats i denn
 
 ## På hemskärmen
 
+Vid start från hemskärmen visas en separat välkomstsida med Jans logga och knappen **Öppna verkstaden**. Sidan fungerar även offline efter inladdning. Återgång från projekt och andra interna sidor öppnar registret direkt. Vanliga webbläsarbesök till startsidans rot öppnar registret som tidigare.
+
 Öppna appen i mobilens webbläsare och välj Lägg till på hemskärmen. Använd samma webbläsare/öppningssätt och webbplatsadress varje gång. Lokal lagring följer inte automatiskt med mellan webbläsare, olika webbplatsadresser eller enheter.

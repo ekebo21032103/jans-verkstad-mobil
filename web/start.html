@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#234e3d" />
+    <meta name="description" content="Välkommen till Jans verkstad. Lite mer ordning. Lite mer arbetsro." />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/jans-hantverk-256.png" />
+    <link rel="icon" href="/icon.svg" />
+    <title>Välkommen – Jans verkstad</title>
+    <style>
+      :root {color-scheme:light;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#234e3d;background:#f7f8f4}
+      * {box-sizing:border-box}
+      body {margin:0;min-height:100svh;background:radial-gradient(ellipse at 50% 20%,#fff 0%,#f7f8f4 65%);display:grid;place-items:center;padding:max(24px,env(safe-area-inset-top)) max(24px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left))}
+      main {width:min(100%,560px);text-align:center;padding:16px 0}
+      .logo {display:block;width:clamp(190px,34vh,310px);max-width:78vw;aspect-ratio:1;margin:0 auto 28px;border-radius:50%;background:white;box-shadow:0 16px 50px #234e3d0a}
+      .eyebrow {font-size:11px;font-weight:650;letter-spacing:.21em;text-transform:uppercase;margin:0 0 12px;color:#72806c}
+      h1 {font-size:clamp(30px,6vw,44px);font-weight:650;letter-spacing:-.035em;line-height:1.15;margin:0 0 18px}
+      .intro {max-width:360px;margin:0 auto 28px;font-size:16px;line-height:1.65;color:#687563;text-wrap:pretty}
+      .start {display:inline-flex;align-items:center;justify-content:center;gap:16px;min-height:56px;min-width:260px;max-width:100%;padding:16px 26px;border-radius:12px;background:#234e3d;color:white;font-size:17px;font-weight:650;text-decoration:none;touch-action:manipulation;box-shadow:0 8px 22px #234e3d16}
+      .start:hover {background:#183d2e}
+      .start:focus-visible {outline:3px solid #91aa76;outline-offset:5px}
+      .start svg {width:21px;height:21px;flex-shrink:0}
+      .motto {margin:30px 0 0;font-size:12px;letter-spacing:.025em;color:#81907a}
+      @media(max-height:650px) {.logo{width:170px;margin-bottom:20px}main{padding:0}h1{font-size:30px}.intro{margin-bottom:20px}.motto{margin-top:20px}}
+    </style>
+  </head>
+  <body>
+    <main>
+      <img class="logo" src="/icon.svg" width="256" height="256" alt="Hantverk av Jan Johansson" />
+      <p class="eyebrow">En plats för allt</p>
+      <h1>Välkommen till<br />Jans verkstad.</h1>
+      <p class="intro">Här finns dina verktyg, förvaringsplatser och idéer till nästa bygge.</p>
+      <a class="start" href="./?oppna=1">Öppna verkstaden <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16m-6-6 6 6-6 6" /></svg></a>
+      <p class="motto">Lite mer ordning. Lite mer arbetsro.</p>
+    </main>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function () {
+          navigator.serviceWorker.register("./sw.js").catch(function () {});
+        });
+      }
+    </script>
+  </body>
+</html>
