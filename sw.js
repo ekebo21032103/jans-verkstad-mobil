@@ -1,6 +1,6 @@
 // Generated from the same build as the pages and their hashed assets.
-const CACHE = "jans-verkstad-app-b40fafcee38d36d9",
-  FILES = ["./assets/index-7sC2byDx.js","./assets/index-BO8ZtpBe.css","./assets/project-data-yFzO-Y3B.js","./assets/projekt-ritningar-C27al74s.js","./forvaringsplatser-bilder.html","./icon.svg","./index.html","./jans-hantverk-256.png","./manifest.webmanifest","./projekt-autosynk.js","./projekt-moln.html","./projekt-ritningar.html","./start.html","./synk-anslut.html","./synk-kontroll.html","./verkstadsoversikt.html"];
+const CACHE = "jans-verkstad-app-c98c7a3cd963dcdb",
+  FILES = ["./assets/index-7sC2byDx.js","./assets/index-BO8ZtpBe.css","./assets/project-data-yFzO-Y3B.js","./assets/projekt-ritningar-C27al74s.js","./forvaringsplatser-bilder.html","./icon.svg","./index.html","./jans-hantverk-256.png","./jans-logga-stor.png","./manifest.webmanifest","./projekt-autosynk.js","./projekt-moln.html","./projekt-ritningar.html","./start.html","./synk-anslut.html","./synk-kontroll.html","./verkstadsoversikt.html"];
 self.addEventListener("install", (event) =>
   event.waitUntil(
     (async () => {
