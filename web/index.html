@@ -26,6 +26,28 @@
     <link rel="icon" href="./icon.svg" />
     <title>Jans verkstad</title>
     <script>
+      // Existing home-screen icons may still launch the directory URL.
+      // Internal returns from projects and galleries go straight to the register.
+      (function () {
+        const url = new URL(location.href);
+        if (url.searchParams.has("oppna")) {
+          url.searchParams.delete("oppna");
+          history.replaceState(history.state, "", url.pathname + url.search + url.hash);
+          return;
+        }
+        const standalone = navigator.standalone === true || window.matchMedia("(display-mode: standalone)").matches;
+        let internal = false;
+        try {
+          const referrer = new URL(document.referrer);
+          internal = referrer.origin === url.origin && referrer.pathname.startsWith(new URL("./", url).pathname);
+        } catch (_) {}
+        if (standalone && !internal) {
+          document.documentElement.style.visibility = "hidden";
+          location.replace(new URL("./start.html", url).href);
+        }
+      })();
+    </script>
+    <script>
       /* Auto-fill public Supabase connection for a new Mac/device.
    The publishable key is intended for browser clients; never store secrets here.
    Existing saved connections, identities, registers and photos stay untouched. */

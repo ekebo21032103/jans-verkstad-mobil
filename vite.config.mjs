@@ -14,6 +14,7 @@ export default defineConfig({
       input: Object.fromEntries(
         [
           "index",
+          "start",
           "projekt-ritningar",
           "forvaringsplatser-bilder",
           "verkstadsoversikt",
