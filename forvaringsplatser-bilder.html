@@ -6,65 +6,7 @@
 <meta name="theme-color" content="#234e3d">
 <link rel="icon" href="./jans-hantverk-256.png">
 <title>Förvaringsplatser i bilder – Jans verkstad</title>
-<style>
-:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#254737;background:#f5f6f0;font-synthesis:none}
-*{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{cursor:pointer}a{color:inherit}
-button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #7aa38b;outline-offset:3px}
-.top{background:#234e3d;color:#fff}.inner{max-width:1110px;margin:auto;display:flex;gap:18px;align-items:center;justify-content:space-between;padding:18px}
-.top b{font-size:19px}.top a{text-decoration:none;border:1px solid #a1b8aa;padding:10px 12px;border-radius:10px;font-size:14px}
-main{max-width:1110px;margin:auto;padding:22px 16px 80px}
-h1{font-size:clamp(28px,5vw,38px);letter-spacing:-.03em;margin:14px 0 9px}
-.subtitle{color:#657767;line-height:1.55;margin-bottom:22px}
-.status{background:#e5ede3;border-radius:11px;padding:12px 15px;line-height:1.45}
-.status.error{background:#f9e9e5;color:#7d2921}
-.filters{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0;align-items:center}.add-place{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:12px 17px;background:#234e3d;color:#fff;border-radius:12px;text-decoration:none;font-weight:650;white-space:nowrap}@media(max-width:490px){.add-place{width:100%}}
-input[type=search]{width:100%;background:white;border:1px solid #cbd5c9;border-radius:12px;padding:15px;min-height:50px;color:#254737;font-size:16px}
-.filters label{flex:1;min-width:230px}
-.count{color:#687b69;font-size:14px;margin:12px 0}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.place{display:flex;flex-direction:column;text-align:left;border:1px solid #dce4da;border-radius:15px;overflow:hidden;background:#fff;padding:0;color:#244435;min-width:0;box-shadow:0 3px 12px #243f3510}
-.place:hover{box-shadow:0 7px 20px #243f3520}
-.cover{position:relative;aspect-ratio:1.8;overflow:hidden;background:#e9eee5}
-.cover img{width:100%;height:100%;object-fit:cover;display:block}
-.cover span{position:absolute;bottom:7px;left:9px;color:#fff;background:#183a2ecf;padding:5px 9px;border-radius:7px;font-weight:700;font-size:12px}
-.mosaic{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;background:#e4ebe0;aspect-ratio:1.8}
-.thumb{position:relative;min-width:0;min-height:0;overflow:hidden;display:flex;justify-content:center;align-items:center;background:#e9eee5;color:#89a18e;font-size:22px}
-.thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.placeholder{height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:#637d69}
-.body{padding:15px 16px 18px;display:flex;flex-direction:column;gap:5px}
-.body b{font-size:17px;overflow-wrap:anywhere}.body small{font-size:13px;color:#6d7b70}
-.empty{padding:32px;text-align:center;border-radius:12px;background:white;color:#637367}
-dialog{padding:0;border:0;border-radius:18px;max-height:90dvh;width:min(920px,calc(100% - 20px));color:#244435;background:#f8faf7;box-shadow:0 18px 70px #10261a66}
-dialog::backdrop{background:#152b20a6}
-.dialoghead{display:flex;gap:12px;justify-content:space-between;align-items:start;padding:18px 20px;border-bottom:1px solid #dce3d8;background:white;position:sticky;top:0;z-index:1}
-.dialoghead h2{font-size:22px;margin:0}.dialoghead p{margin:5px 0 0;color:#6c7e6e;font-size:13px}
-.close{border:1px solid #d6dfd4;background:#f1f4ed;border-radius:12px;padding:9px 13px;white-space:nowrap}
-.dialogbody{padding:18px}
-.place-photo-area{padding:18px;border-bottom:1px solid #dce3d8}
-.place-photo-area>img{width:100%;max-height:390px;object-fit:contain;background:#ebefe9;border-radius:12px;margin-bottom:12px;display:block}
-.place-photo-area>img[hidden]{display:none}
-.photo-toolbar{display:flex;flex-wrap:wrap;gap:9px}
-.photo-toolbar button,.backup-toolbar button{background:#234e3d;color:white;border:0;border-radius:10px;padding:11px 15px;min-height:43px;font-size:14px;font-weight:650}
-.photo-toolbar .secondary,.backup-toolbar .secondary{background:#e5ebe3;color:#234e3d}
-.photo-toolbar .delete{background:#fff;color:#a3312b;border:1px solid #d9aba6}
-.photo-toolbar button[hidden]{display:none}
-.photo-status{color:#5e7262;line-height:1.5;font-size:13px;margin:10px 0 0}
-.backup-toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:11px 0}
-.backup-note{color:#647768;font-size:13px;line-height:1.55}
-.photo-empty{display:flex;align-items:center;justify-content:center;aspect-ratio:2.2;background:#e5ece2;border:1px dashed #b6c5b4;border-radius:12px;color:#647d69;margin-bottom:12px;font-weight:600}
-
-.items{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.item{border:1px solid #dce4da;border-radius:12px;overflow:hidden;background:white;display:flex;flex-direction:column;min-width:0}
-.item img,.item .noimg{width:100%;aspect-ratio:4/3;object-fit:cover;background:#e8ede7}
-.noimg{display:flex;align-items:center;justify-content:center;color:#8b9d8e}
-.item .details{padding:12px;display:grid;gap:4px}
-.item .details b{font-size:14px;overflow-wrap:anywhere}
-.item .details small{color:#67776a;font-size:12px;overflow-wrap:anywhere}
-.note{font-size:13px;color:#637365;line-height:1.55;margin-top:20px}
-@media(max-width:800px){.grid,.items{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.photo-empty[hidden]{display:none}
-@media(max-width:490px){.inner{flex-direction:column;align-items:flex-start}.grid,.items{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.body{padding:11px}.body b{font-size:14px}.body small{font-size:12px}.mosaic{aspect-ratio:1.25}.dialogbody{padding:10px}dialog{width:calc(100% - 12px)}}
-</style>
+<style>:root{color:#254737;font-synthesis:none;background:#f5f6f0;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif}*{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{cursor:pointer}a{color:inherit}button:focus-visible,a:focus-visible,input:focus-visible{outline-offset:3px;outline:3px solid #7aa38b}.top{color:#fff;background:#234e3d}.inner{justify-content:space-between;align-items:center;gap:18px;max-width:1110px;margin:auto;padding:18px;display:flex}.top b{font-size:19px}.top a{border:1px solid #a1b8aa;border-radius:10px;padding:10px 12px;font-size:14px;text-decoration:none}main{max-width:1110px;margin:auto;padding:22px 16px 80px}h1{letter-spacing:-.03em;margin:14px 0 9px;font-size:clamp(28px,5vw,38px)}.subtitle{color:#657767;margin-bottom:22px;line-height:1.55}.status{background:#e5ede3;border-radius:11px;padding:12px 15px;line-height:1.45}.status.error{color:#7d2921;background:#f9e9e5}.filters{flex-wrap:wrap;align-items:center;gap:10px;margin:20px 0;display:flex}.add-place{color:#fff;white-space:nowrap;background:#234e3d;border-radius:12px;justify-content:center;align-items:center;min-height:50px;padding:12px 17px;font-weight:650;text-decoration:none;display:inline-flex}@media (width<=490px){.add-place{width:100%}}input[type=search]{color:#254737;background:#fff;border:1px solid #cbd5c9;border-radius:12px;width:100%;min-height:50px;padding:15px;font-size:16px}.filters label{flex:1;min-width:230px}.count{color:#687b69;margin:12px 0;font-size:14px}.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;display:grid}.place{text-align:left;color:#244435;background:#fff;border:1px solid #dce4da;border-radius:15px;flex-direction:column;min-width:0;padding:0;display:flex;overflow:hidden;box-shadow:0 3px 12px #243f3510}.place:hover{box-shadow:0 7px 20px #243f3520}.cover{aspect-ratio:1.8;background:#e9eee5;position:relative;overflow:hidden}.cover img{object-fit:cover;width:100%;height:100%;display:block}.cover span{color:#fff;background:#183a2ecf;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;position:absolute;bottom:7px;left:9px}.mosaic{aspect-ratio:1.8;background:#e4ebe0;grid-template-rows:1fr 1fr;grid-template-columns:1fr 1fr;gap:2px;display:grid}.thumb{color:#89a18e;background:#e9eee5;justify-content:center;align-items:center;min-width:0;min-height:0;font-size:22px;display:flex;position:relative;overflow:hidden}.thumb img{object-fit:cover;width:100%;height:100%;display:block}.placeholder{color:#637d69;flex-direction:column;justify-content:center;align-items:center;gap:8px;height:100%;display:flex}.body{flex-direction:column;gap:5px;padding:15px 16px 18px;display:flex}.body b{overflow-wrap:anywhere;font-size:17px}.body small{color:#6d7b70;font-size:13px}.empty{text-align:center;color:#637367;background:#fff;border-radius:12px;padding:32px}dialog{color:#244435;background:#f8faf7;border:0;border-radius:18px;width:min(920px,100% - 20px);max-height:90dvh;padding:0;box-shadow:0 18px 70px #10261a66}dialog::backdrop{background:#152b20a6}.dialoghead{z-index:1;background:#fff;border-bottom:1px solid #dce3d8;justify-content:space-between;align-items:start;gap:12px;padding:18px 20px;display:flex;position:sticky;top:0}.dialoghead h2{margin:0;font-size:22px}.dialoghead p{color:#6c7e6e;margin:5px 0 0;font-size:13px}.close{white-space:nowrap;background:#f1f4ed;border:1px solid #d6dfd4;border-radius:12px;padding:9px 13px}.dialogbody{padding:18px}.place-photo-area{border-bottom:1px solid #dce3d8;padding:18px}.place-photo-area>img{object-fit:contain;background:#ebefe9;border-radius:12px;width:100%;max-height:390px;margin-bottom:12px;display:block}.place-photo-area>img[hidden]{display:none}.photo-toolbar{flex-wrap:wrap;gap:9px;display:flex}.photo-toolbar button,.backup-toolbar button{color:#fff;background:#234e3d;border:0;border-radius:10px;min-height:43px;padding:11px 15px;font-size:14px;font-weight:650}.photo-toolbar .secondary,.backup-toolbar .secondary{color:#234e3d;background:#e5ebe3}.photo-toolbar .delete{color:#a3312b;background:#fff;border:1px solid #d9aba6}.photo-toolbar button[hidden]{display:none}.photo-status{color:#5e7262;margin:10px 0 0;font-size:13px;line-height:1.5}.backup-toolbar{flex-wrap:wrap;align-items:center;gap:8px;margin:11px 0;display:flex}.backup-note{color:#647768;font-size:13px;line-height:1.55}.photo-empty{aspect-ratio:2.2;color:#647d69;background:#e5ece2;border:1px dashed #b6c5b4;border-radius:12px;justify-content:center;align-items:center;margin-bottom:12px;font-weight:600;display:flex}.items{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;display:grid}.item{background:#fff;border:1px solid #dce4da;border-radius:12px;flex-direction:column;min-width:0;display:flex;overflow:hidden}.item img,.item .noimg{aspect-ratio:4/3;object-fit:cover;background:#e8ede7;width:100%}.noimg{color:#8b9d8e;justify-content:center;align-items:center;display:flex}.item .details{gap:4px;padding:12px;display:grid}.item .details b{overflow-wrap:anywhere;font-size:14px}.item .details small{color:#67776a;overflow-wrap:anywhere;font-size:12px}.note{color:#637365;margin-top:20px;font-size:13px;line-height:1.55}@media (width<=800px){.grid,.items{grid-template-columns:repeat(2,minmax(0,1fr))}}.photo-empty[hidden]{display:none}@media (width<=490px){.inner{flex-direction:column;align-items:flex-start}.grid,.items{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.body{padding:11px}.body b{font-size:14px}.body small{font-size:12px}.mosaic{aspect-ratio:1.25}.dialogbody{padding:10px}dialog{width:calc(100% - 12px)}}</style>
 </head>
 <body>
 <header class="top"><div class="inner"><b>Jans verkstad · Förvaringsplatser i bilder</b><a href="./">Till verktygsregistret</a></div></header>
@@ -126,11 +68,11 @@ async function loadPlacePhotos(){
  placePhotos=new Map(a.filter(x=>x&&typeof x.id==='string'&&/^data:image\/jpeg;base64,/i.test(x.dataUrl)).map(x=>[x.id,x]));
 }
 async function putPhoto(record){
- const d=await openPhotoDB();await request(d.transaction(PHOTO_STORE,'readwrite').objectStore(PHOTO_STORE).put(record));
+ const d=await openPhotoDB(),tx=d.transaction(PHOTO_STORE,'readwrite');const done=new Promise((resolve,reject)=>{tx.oncomplete=resolve;tx.onerror=tx.onabort=()=>reject(tx.error||Error('Kunde inte spara platsfotot.'))});tx.objectStore(PHOTO_STORE).put(record);await done;
  placePhotos.set(record.id,record);
 }
 async function erasePhoto(id){
- const d=await openPhotoDB();await request(d.transaction(PHOTO_STORE,'readwrite').objectStore(PHOTO_STORE).delete(id));
+ const d=await openPhotoDB(),tx=d.transaction(PHOTO_STORE,'readwrite');const done=new Promise((resolve,reject)=>{tx.oncomplete=resolve;tx.onerror=tx.onabort=()=>reject(tx.error||Error('Kunde inte ta bort platsfotot.'))});tx.objectStore(PHOTO_STORE).delete(id);await done;
  placePhotos.delete(id);
 }
 function showPlacePhoto(entry){
@@ -179,7 +121,8 @@ async function backupPlacePhotos(){
   const rows=[...placePhotos.values()].map(x=>({id:x.id,name:x.name,dataUrl:x.dataUrl,updated:x.updated}));
   if(!rows.length){$('status').textContent='Det finns ännu inga platsbilder att exportera.';return;}
   const content=JSON.stringify({format:'jans-verkstad-platsfoton-v1',exported:new Date().toISOString(),photos:rows});
-  const url=URL.createObjectURL(new Blob([content],{type:'application/json'})),a=document.createElement('a');
+  const blob=new Blob([content],{type:'application/json'});if(blob.size>100*1024*1024)throw Error('Platsbilderna är för stora för äldre JSON-format. Använd Säkerhetskopiera hela verkstaden på startsidan.');
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
   a.href=url;a.download='jans-platsbilder-'+new Date().toISOString().slice(0,10)+'.json';
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
   $('status').textContent='Säkerhetskopia skapad med '+rows.length+' platsbilder. Spara filen i Filer eller iCloud Drive.';

@@ -1,0 +1,8 @@
+.cloud-panel{border:1px solid #d4dbcf;border-radius:22px;background:#f2f4ed;padding:24px;margin:28px 0;color:#23483b}
+.cloud-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px}.cloud-header h2{margin:0 0 5px;font-size:1.35rem}.cloud-header p{margin:0;color:#667667}
+.cloud-body{margin-top:18px;display:grid;gap:14px}.cloud-body p{margin:0}.cloud-body .field{display:flex;flex-direction:column;gap:7px;font-weight:600}
+.cloud-body .field input{font:inherit;max-width:100%;width:100%;box-sizing:border-box;padding:12px;border:1px solid #c4cdbf;border-radius:10px;background:white;color:#213b31}
+.cloud-body form{display:grid;gap:12px}.cloud-body button{justify-content:center;min-height:48px}.cloud-counts{padding:15px;background:white;border-radius:12px;display:grid;gap:8px;font-size:.95rem}
+.cloud-warning{background:#fff0d3;border:1px solid #c58f24;border-radius:12px;padding:12px;color:#503a10}.cloud-link{appearance:none;background:transparent;border:0;text-align:left;text-decoration:underline;cursor:pointer;color:inherit;font:inherit;padding:12px 0}
+.cloud-note{font-size:.87rem;color:#637368}.cloud-message{margin:12px 0 0;color:#214b39;overflow-wrap:anywhere}
+@media(max-width:600px){.cloud-panel{padding:17px;margin:24px 0}.cloud-header h2{font-size:1.15rem}}
